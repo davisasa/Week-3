@@ -1,0 +1,31 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+.main{
+    width: auto;
+    color: antiquewhite;
+    background-position: center;
+    background-size: cover;
+    height: 150px;
+    background-color: transparent;
+    font-family: Arial black;
+    font-size: 32px;
+}
+
+.navbar{
+    width: auto;
+    height: 100px;
+    background-color: black;
+}
+
+.icon{
+    width: 200px;
+}
+
+
+body{
+    background: url(img/airplane-flying-clouds-sunset-light_335224-1386.avif);
+    background-size: cover;
+}

@@ -1,0 +1,33 @@
+body{
+    background-color: grey;
+}
+
+#First_heading{
+    color:brown;
+}
+
+#definition{
+    background-color: aqua;
+    font-size: 20px;
+}
+
+#Second_heading{
+    background-color: chartreuse;
+}
+
+.media{
+    border: solid;
+    border-width: 5px;
+    border-color: gold;
+}
+
+#list{
+    color: red;
+    background-color: orange;
+}
+
+.media{
+    border-radius: 20%;
+    margin-top: 20px;
+    padding: 30px 20px ;
+}

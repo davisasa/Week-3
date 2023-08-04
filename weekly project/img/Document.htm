@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><script type="text/javascript">
+  (function () {
+    try {
+        const CART_URL_REGEX = [
+          /cart/,
+          /checkout/,
+          /bag/,
+          /basket/
+        ];
+        const { fetch: originalFetch } = window;
+
+        window.fetch = async (...args) => {
+            let [resource, config] = args;
+            const response = await originalFetch(resource, config);
+            const clonedResponse = response.clone();
+
+            if (typeof resource === "string") {
+                urlNoQueryStrings = (resource).split('?')[0];
+            } else {
+                urlNoQueryStrings = (resource?.url || '').split('?')[0];
+            }
+
+            const contentType =  clonedResponse.headers.get('Content-Type');
+            if (CART_URL_REGEX.some((m) => urlNoQueryStrings && m.test(urlNoQueryStrings)) && contentType.includes('json')) {
+              setTimeout(async () => {
+                const responseBody = await clonedResponse.text()
+
+                if (responseBody) window.postMessage({ type: "CART_EVENT_DETECTED", cart: responseBody }, "*");
+              }, 1000);
+            }
+
+            return response;
+        };
+
+        let XHR = XMLHttpRequest.prototype;
+        let send = XHR.send;
+        let open = XHR.open;
+        XHR.open = function (method, url) {
+            this.url = url; // the request url
+            return open.apply(this, arguments);
+        }
+        XHR.send = function () {
+            this.addEventListener('load', function () {
+                const urlNoQueryStrings = this.url.split('?')[0];
+                const contentType = this.getResponseHeader("Content-Type");
+                 if (CART_URL_REGEX.some((m) => urlNoQueryStrings && m.test(urlNoQueryStrings)) && contentType.includes('json')) {
+                     if (this.response) window.postMessage({ type: "CART_EVENT_DETECTED", cart: this.response }, "*");
+                 }
+            });
+            return send.apply(this, arguments);
+        };
+    } catch (error) {
+        console.log({ error })
+    }
+})();
+  </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=Sign Up Form, initial-scale=1.0">
+    
+    <title>Document</title>
+<link rel="stylesheet" href="Document_files/styles.css"></head>
+<body>
+    <div class="main">
+        <div class="navbar">
+            <div class="logo">
+                <h2>AD Travels &amp; Tours</h2>
+            </div>
+        </div>
+    </div>
+    
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body><div id="__genieContainer" style="all: initial;"></div></html>
